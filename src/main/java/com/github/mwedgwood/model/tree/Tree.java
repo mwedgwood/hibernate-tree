@@ -1,5 +1,7 @@
 package com.github.mwedgwood.model.tree;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.hibernate.Hibernate;
@@ -39,7 +41,9 @@ public abstract class Tree<T extends TreeElement> {
 
     private Integer id;
     private T element;
+    @JsonBackReference
     private Tree<T> parent;
+    @JsonManagedReference
     private List<Tree<T>> children = new LinkedList<>();
 
     // used by hibernate
@@ -110,8 +114,7 @@ public abstract class Tree<T extends TreeElement> {
         return Joiner.on(".").join(Lists.reverse(parts));
     }
 
-    @Transient
-    public Integer getDepth() {
+    public Integer calculateDepth() {
         Integer depth = 0;
         for (Tree root = this.getParent(); root != null; root = root.getParent()) {
             depth++;

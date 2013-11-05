@@ -74,4 +74,9 @@ public class TreeElement {
         this.tree = tree;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }
