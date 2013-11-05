@@ -19,7 +19,7 @@ public class TreeTest {
     }
 
     @Test
-    public void testToString() throws Exception {
+    public void testPrettyPrint() throws Exception {
         String output = "└── root\n" +      //
                 "    ├── child1\n" +        //
                 "    │   └── child1.1\n" +  //
@@ -30,7 +30,7 @@ public class TreeTest {
     }
 
     @Test
-    public void testCreatePath() {
+    public void testGetPath() {
         TestTree root = new TestTree("root", null);
         TestTree child1 = root.addChild("child1");
         TestTree child12 = child1.addChild("child1.1");
@@ -41,7 +41,7 @@ public class TreeTest {
     }
 
     @Test
-    public void testCalculate() throws Exception {
+    public void testCalculateDepth() throws Exception {
         TestTree root = new TestTree("root", null);
         TestTree child1 = root.addChild("child1");
         TestTree child12 = child1.addChild("child1.1");
