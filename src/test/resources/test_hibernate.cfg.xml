@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- datasource settings -->
+        <property name="connection.driver_class">org.h2.Driver</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.H2Dialect</property>
+
+        <property name="hbm2ddl.auto">create-drop</property>
+
+        <!-- second level cache settings -->
+        <property name="cache.use_second_level_cache">false</property>
+        <property name="cache.use_query_cache">false</property>
+
+        <!-- debug settings -->
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+
+    </session-factory>
+</hibernate-configuration>

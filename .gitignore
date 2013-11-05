@@ -1,6 +1,9 @@
-*.class
+# Idea project settings
+.idea
+*.iml
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# Java stuff
+target
+logs
+*.log
+*.log.zip
