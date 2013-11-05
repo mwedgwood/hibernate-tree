@@ -41,7 +41,7 @@ public class TreeTest {
     }
 
     @Test
-    public void testGetDepth() throws Exception {
+    public void testCalculate() throws Exception {
         TestTree root = new TestTree("root", null);
         TestTree child1 = root.addChild("child1");
         TestTree child12 = child1.addChild("child1.1");
