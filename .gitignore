@@ -7,3 +7,6 @@ target
 logs
 *.log
 *.log.zip
+
+# h2 stuff
+*.db
