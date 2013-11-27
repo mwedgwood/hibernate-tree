@@ -32,8 +32,8 @@ public class ComplexTreeTest {
 
     @Test
     public void testSave() throws Exception {
-        ComplexTree root = ComplexTree.createRoot("root", "root of tree");
-        root.addChild(new ComplexTreeElement("first child", "first child"));
+        ComplexTree root = Tree.createRoot(new ComplexTreeElement("root", null), ComplexTree.class);
+        root.addChildTree(new ComplexTreeElement("first child", "first child"));
         session.save(root);
 
         session.flush();

@@ -35,8 +35,8 @@ public class SimpleTreeTest {
     public void testSave() throws Exception {
         SimpleTreeRepository repository = new SimpleTreeRepository(session);
 
-        SimpleTree root = SimpleTree.createRoot("root", "root of tree");
-        root.addChild(new TreeElement("first child", "first child"));
+        SimpleTree root = Tree.createRoot(new TreeElement("root", "root of tree"), SimpleTree.class);
+        root.addChildTree(new TreeElement("first child", "first child"));
         repository.save(root);
 
         session.flush();

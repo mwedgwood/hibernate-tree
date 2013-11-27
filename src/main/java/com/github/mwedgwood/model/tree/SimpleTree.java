@@ -7,16 +7,6 @@ import javax.persistence.Entity;
 @DiscriminatorValue("SIMPLE_TREE")
 public class SimpleTree extends Tree<TreeElement> {
 
-    private SimpleTree(TreeElement element, SimpleTree parent) {
-        super(element, parent);
+    SimpleTree() {
     }
-
-    public static SimpleTree createRoot(String name, String description) {
-        return new SimpleTree(new TreeElement(name, description), null);
-    }
-
-    public SimpleTree addChild(TreeElement element) {
-        return (SimpleTree) addChildTree(new SimpleTree(element, this));
-    }
-
 }

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 
@@ -35,6 +37,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "tree")
+@DynamicUpdate
+@DynamicInsert
 @DiscriminatorColumn(name = "tree_type")
 @DiscriminatorValue("BASE_TREE")
 public abstract class Tree<T extends TreeElement> {
@@ -50,10 +54,16 @@ public abstract class Tree<T extends TreeElement> {
     Tree() {
     }
 
-    protected Tree(T element, Tree<T> parent) {
-        this.element = element;
-        this.parent = parent;
-        this.element.setTree(this);
+    public static <R extends Tree<S>, S extends TreeElement> R createRoot(S treeElement, Class<R> type) {
+        R root;
+        try {
+            root = type.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        root.setElement(treeElement);
+        treeElement.setTree(root);
+        return root;
     }
 
     @Id
@@ -98,6 +108,21 @@ public abstract class Tree<T extends TreeElement> {
     public Tree<T> addChildTree(Tree<T> childTree) {
         children.add(childTree);
         return childTree.setParent(this);
+    }
+
+    public <R extends Tree<T>> R addChildTree(T treeElement) {
+        R newChild;
+        try {
+            //noinspection unchecked
+            newChild = (R) this.getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        newChild.setElement(treeElement);
+        treeElement.setTree(newChild);
+
+        this.addChildTree(newChild);
+        return newChild;
     }
 
     public Tree<T> removeChildTree(Tree<T> childTree) {

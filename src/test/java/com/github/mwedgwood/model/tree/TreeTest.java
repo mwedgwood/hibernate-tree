@@ -3,20 +3,8 @@ package com.github.mwedgwood.model.tree;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 public class TreeTest {
-
-
-    @Test
-    public void testAddChildTree() throws Exception {
-        Tree<TreeElement> tree = createStubTestTree();
-        Tree child3 = tree.addChildTree(new TestTree("child3", tree));
-
-        assertEquals("child3", child3.getElement().getName());
-        assertSame(tree, child3.getParent());
-        assertEquals(0, child3.getChildren().size());
-    }
 
     @Test
     public void testPrettyPrint() throws Exception {
@@ -31,7 +19,7 @@ public class TreeTest {
 
     @Test
     public void testGetPath() {
-        TestTree root = new TestTree("root", null);
+        TestTree root = Tree.createRoot(new TreeElement("root", null), TestTree.class);
         TestTree child1 = root.addChild("child1");
         TestTree child12 = child1.addChild("child1.1");
 
@@ -42,7 +30,7 @@ public class TreeTest {
 
     @Test
     public void testCalculateDepth() throws Exception {
-        TestTree root = new TestTree("root", null);
+        TestTree root = Tree.createRoot(new TreeElement("root", null), TestTree.class);
         TestTree child1 = root.addChild("child1");
         TestTree child12 = child1.addChild("child1.1");
 
@@ -61,22 +49,20 @@ public class TreeTest {
 
 
     private Tree<TreeElement> createStubTestTree() {
-        TestTree root = new TestTree("root", null);
+        TestTree root = Tree.createRoot(new TreeElement("root", null), TestTree.class);
         root.addChild("child1").addChild("child1.1");
         root.addChild("child2").addChild("child2.1");
         return root;
     }
 
     private static class TestTree extends Tree<TreeElement> {
-        private TestTree(String elementName, Tree<TreeElement> parent) {
-            super(new TreeElement(elementName, "some name") {
-            }, parent);
+
+        TestTree() {
         }
 
-        TestTree addChild(String name) {
-            return (TestTree) addChildTree(new TestTree(name, this));
+        private TestTree addChild(String name) {
+            return addChildTree(new TreeElement(name, null));
         }
-
     }
 
 }
