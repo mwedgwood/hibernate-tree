@@ -9,7 +9,6 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
 
 import java.util.List;
-import java.util.Set;
 
 @SuppressWarnings({"unchecked"})
 public abstract class AbstractRepository<T> implements Repository<T> {
@@ -65,10 +64,10 @@ public abstract class AbstractRepository<T> implements Repository<T> {
     }
 
     protected Criteria createCriteria(Criterion... criterion) {
-        return createCriteria(true,  criterion);
+        return createCriteria(true, criterion);
     }
 
-    protected Criteria createCriteria(boolean cacheable,  Criterion... criterion) {
+    protected Criteria createCriteria(boolean cacheable, Criterion... criterion) {
         Criteria criteria = getCurrentSession().createCriteria(getPersistentClass());
         for (Criterion crit : criterion) {
             criteria.add(crit);
@@ -99,7 +98,7 @@ public abstract class AbstractRepository<T> implements Repository<T> {
         }
 
         @Override
-        public RepositoryResult<T> orderBy(Set<Order> orders) {
+        public RepositoryResult<T> orderBy(Order... orders) {
             for (Order order : orders) {
                 criteria.addOrder(order);
             }

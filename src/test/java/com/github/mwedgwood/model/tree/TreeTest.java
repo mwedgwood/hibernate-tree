@@ -34,9 +34,9 @@ public class TreeTest {
         TestTree child1 = root.addChild("child1");
         TestTree child12 = child1.addChild("child1.1");
 
-        assertEquals(2, child12.calculateDepth().intValue());
-        assertEquals(1, child1.calculateDepth().intValue());
-        assertEquals(0, root.calculateDepth().intValue());
+        assertEquals(2, child12.getDepth().intValue());
+        assertEquals(1, child1.getDepth().intValue());
+        assertEquals(0, root.getDepth().intValue());
     }
 
     @Test

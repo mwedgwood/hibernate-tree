@@ -5,6 +5,7 @@ import com.github.mwedgwood.service.PersistenceService;
 import com.github.mwedgwood.service.TestPersistenceServiceImpl;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +27,17 @@ public class SimpleTreeTest {
 
     @After
     public void tearDown() {
-        session.getTransaction().commit();
-        session.close();
+        Transaction transaction = session.getTransaction();
+        try {
+            session.flush();
+            session.clear();
+        } finally {
+            if ((transaction != null && transaction.isActive())) {
+                transaction.rollback();
+            }
+            session.close();
+        }
     }
-
 
     @Test
     public void testSave() throws Exception {

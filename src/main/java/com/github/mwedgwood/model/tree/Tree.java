@@ -118,12 +118,9 @@ public abstract class Tree<T extends TreeElement> {
         return Joiner.on(".").join(Lists.reverse(parts));
     }
 
-    public Integer calculateDepth() {
-        Integer depth = 0;
-        for (Tree root = this.getParent(); root != null; root = root.getParent()) {
-            depth++;
-        }
-        return depth;
+    @Transient
+    public Integer getDepth() {
+        return parent == null ? 0 : (parent.getDepth() + 1);
     }
 
     @Override

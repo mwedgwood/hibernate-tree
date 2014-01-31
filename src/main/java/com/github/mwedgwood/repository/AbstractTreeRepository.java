@@ -11,8 +11,6 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public abstract class AbstractTreeRepository<T extends Tree> extends AbstractRepository<T> implements TreeRepository<T> {
 
-    protected static final int MAX_DEPTH = 8;
-
     @Override
     public T findByIdForDepth(Integer id, Integer depth) {
         T treeById = super.findById(id);
@@ -65,7 +63,7 @@ public abstract class AbstractTreeRepository<T extends Tree> extends AbstractRep
     }
 
     T initializeToDepth(int depth, T tree) {
-        if(tree == null) return null;
+        if (tree == null) return null;
         initializeToDepth(0, depth, tree);
         return tree;
     }
