@@ -1,35 +1,33 @@
 package com.github.mwedgwood.model.tree;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
+import com.github.mwedgwood.model.SomeModel;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "complex_tree")
 public class ComplexTree extends Tree {
 
-    private String stuff;
-    private String moreStuff;
+    private SomeModel someModel;
 
     ComplexTree() {
     }
 
-    @Column(name = "stuff")
-    public String getStuff() {
-        return stuff;
+    @OneToOne
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = "some_model_id")
+    public SomeModel getSomeModel() {
+        return someModel;
     }
 
-    public void setStuff(String stuff) {
-        this.stuff = stuff;
-    }
-
-    @Column(name = "more_stuff")
-    public String getMoreStuff() {
-        return moreStuff;
-    }
-
-    public void setMoreStuff(String moreStuff) {
-        this.moreStuff = moreStuff;
+    public ComplexTree setSomeModel(SomeModel someModel) {
+        this.someModel = someModel;
+        return this;
     }
 }

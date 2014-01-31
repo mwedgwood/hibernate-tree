@@ -1,5 +1,6 @@
 package com.github.mwedgwood.service;
 
+import com.github.mwedgwood.model.SomeModel;
 import com.github.mwedgwood.model.tree.Tree;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -55,7 +56,7 @@ public class TestPersistenceServiceImpl implements PersistenceService {
     }
 
     protected Configuration addAnnotatedClasses(Configuration configuration) {
-        for (Class<?> aClass : new Reflections(Tree.class.getPackage().getName()).getTypesAnnotatedWith(Entity.class)) {
+        for (Class<?> aClass : new Reflections(SomeModel.class.getPackage().getName()).getTypesAnnotatedWith(Entity.class)) {
             // don't load classes that have generic type parameters as hibernate can not deal with them unless used as superclasses
             if (aClass.getTypeParameters().length == 0) configuration.addAnnotatedClass(aClass);
         }

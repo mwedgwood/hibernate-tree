@@ -1,5 +1,6 @@
 package com.github.mwedgwood.model.tree;
 
+import com.github.mwedgwood.model.SomeModel;
 import com.github.mwedgwood.repository.AbstractRepository;
 import com.github.mwedgwood.repository.AbstractTreeRepository;
 import com.github.mwedgwood.repository.TreeRepository;
@@ -59,7 +60,7 @@ public class ComplexTreeTest {
 
     @Test
     public void testListWithMixedType() throws Exception {
-        ComplexTree rootTree = Tree.createRoot("complex root", ComplexTree.class);
+        ComplexTree rootTree = Tree.createRoot("complex root", ComplexTree.class).setSomeModel(new SomeModel());
         rootTree.addChildTree(new ComplexTree().setName("complex child"));
         rootTree.addChildTree(new SimpleTree().setName("simple child"));
 
