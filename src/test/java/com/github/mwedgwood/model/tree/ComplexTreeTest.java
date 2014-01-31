@@ -44,8 +44,8 @@ public class ComplexTreeTest {
 
     @Test
     public void testSave() throws Exception {
-        ComplexTree root = Tree.createRoot(new ComplexTreeElement("root", null), ComplexTree.class);
-        root.addChildTree(new ComplexTreeElement("first child", "first child"));
+        ComplexTree root = Tree.createRoot("root", ComplexTree.class);
+        root.addChildTree("first child");
         session.save(root);
 
         session.flush();
@@ -57,8 +57,8 @@ public class ComplexTreeTest {
 
     @Test
     public void testListWithMixedType() throws Exception {
-        ComplexTree complexTree = Tree.createRoot(new ComplexTreeElement("complex tree root", null), ComplexTree.class);
-        SimpleTree simpleTree = Tree.createRoot(new TreeElement("simple tree root", null), SimpleTree.class);
+        ComplexTree complexTree = Tree.createRoot("complex root", ComplexTree.class);
+        SimpleTree simpleTree = Tree.createRoot("simple root", SimpleTree.class);
 
         session.save(complexTree);
         session.save(simpleTree);
