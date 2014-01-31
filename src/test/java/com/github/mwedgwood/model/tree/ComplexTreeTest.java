@@ -1,6 +1,8 @@
 package com.github.mwedgwood.model.tree;
 
 import com.github.mwedgwood.repository.AbstractRepository;
+import com.github.mwedgwood.repository.AbstractTreeRepository;
+import com.github.mwedgwood.repository.TreeRepository;
 import com.github.mwedgwood.service.PersistenceService;
 import com.github.mwedgwood.service.TestPersistenceServiceImpl;
 import org.hibernate.FlushMode;
@@ -57,25 +59,25 @@ public class ComplexTreeTest {
 
     @Test
     public void testListWithMixedType() throws Exception {
-        ComplexTree complexTree = Tree.createRoot("complex root", ComplexTree.class);
-        SimpleTree simpleTree = Tree.createRoot("simple root", SimpleTree.class);
+        ComplexTree rootTree = Tree.createRoot("complex root", ComplexTree.class);
+        rootTree.addChildTree(new ComplexTree().setName("complex child"));
+        rootTree.addChildTree(new SimpleTree().setName("simple child"));
 
-        session.save(complexTree);
-        session.save(simpleTree);
+        session.save(rootTree);
+        session.flush();
+
+        Tree root = createTreeRepository().findRoot();
+        List<Tree> children = root.getChildren();
 
         session.flush();
 
-        List<Tree> results = createTreeRepository().findAll()
-                .orderBy(Order.asc("id"))
-                .list();
-
-        assertFalse(results.isEmpty());
-        assertTrue(results.get(0) instanceof ComplexTree);
-        assertTrue(results.get(1) instanceof SimpleTree);
+        assertFalse(children.isEmpty());
+        assertTrue(children.get(0) instanceof ComplexTree);
+        assertTrue(children.get(1) instanceof SimpleTree);
     }
 
-    private AbstractRepository<Tree> createTreeRepository() {
-        return new AbstractRepository<Tree>() {
+    private TreeRepository<Tree> createTreeRepository() {
+        return new AbstractTreeRepository<Tree>() {
             @Override
             protected Session getCurrentSession() {
                 return session;

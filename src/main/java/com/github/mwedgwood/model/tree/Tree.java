@@ -58,8 +58,9 @@ public abstract class Tree {
         return name;
     }
 
-    public void setName(String name) {
+    public Tree setName(String name) {
         this.name = name;
+        return this;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
