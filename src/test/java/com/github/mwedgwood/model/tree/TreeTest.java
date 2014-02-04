@@ -41,21 +41,21 @@ public class TreeTest {
 
     @Test
     public void testFindTree() throws Exception {
-        Tree<TreeElement> child2 = createStubTestTree().findTree("child2");
+        Tree child2 = createStubTestTree().findTree("child2");
 
         assertEquals("child2", child2.getElement().getName());
         assertEquals("root", child2.getParent().getElement().getName());
     }
 
 
-    private Tree<TreeElement> createStubTestTree() {
+    private Tree createStubTestTree() {
         TestTree root = Tree.createRoot(new TreeElement("root", null), TestTree.class);
         root.addChild("child1").addChild("child1.1");
         root.addChild("child2").addChild("child2.1");
         return root;
     }
 
-    private static class TestTree extends Tree<TreeElement> {
+    private static class TestTree extends Tree {
 
         TestTree() {
         }

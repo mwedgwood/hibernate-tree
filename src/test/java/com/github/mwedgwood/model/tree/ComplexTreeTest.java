@@ -1,12 +1,12 @@
 package com.github.mwedgwood.model.tree;
 
-import com.github.mwedgwood.repository.AbstractRepository;
+import com.github.mwedgwood.repository.AbstractTreeRepository;
+import com.github.mwedgwood.repository.TreeRepository;
 import com.github.mwedgwood.service.PersistenceService;
 import com.github.mwedgwood.service.TestPersistenceServiceImpl;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Order;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,38 +44,40 @@ public class ComplexTreeTest {
 
     @Test
     public void testSave() throws Exception {
-        ComplexTree root = Tree.createRoot(new ComplexTreeElement("root", null), ComplexTree.class);
+        Tree root = Tree.createRoot(new ComplexTreeElement("root", null), Tree.class);
         root.addChildTree(new ComplexTreeElement("first child", "first child"));
         session.save(root);
 
         session.flush();
 
-        ComplexTree treeFromDb = (ComplexTree) session.get(ComplexTree.class, root.getId());
+        Tree treeFromDb = (Tree) session.get(Tree.class, root.getId());
 
         assertEquals(1, treeFromDb.getChildren().size());
     }
 
     @Test
     public void testListWithMixedType() throws Exception {
-        ComplexTree complexTree = Tree.createRoot(new ComplexTreeElement("complex tree root", null), ComplexTree.class);
-        SimpleTree simpleTree = Tree.createRoot(new TreeElement("simple tree root", null), SimpleTree.class);
+        Tree complexTree = Tree.createRoot(new ComplexTreeElement("complex tree root", null), Tree.class);
+        complexTree.addChildTree(new TreeElement("first child base element", "base tree element"));
+        complexTree.addChildTree(new ComplexTreeElement("first Child complex element", "complex tree element"));
 
         session.save(complexTree);
-        session.save(simpleTree);
+        session.flush();
+
+        Tree root = createTreeRepository().findRoot();
 
         session.flush();
 
-        List<Tree> results = createTreeRepository().findAll()
-                .orderBy(Order.asc("id"))
-                .list();
+        assertEquals(ComplexTreeElement.class, root.getElement().getClass());
 
-        assertFalse(results.isEmpty());
-        assertTrue(results.get(0) instanceof ComplexTree);
-        assertTrue(results.get(1) instanceof SimpleTree);
+        List<Tree> children = root.getChildren();
+        assertFalse(children.isEmpty());
+        assertEquals(1, children.size());
+        assertEquals(TreeElement.class, children.get(0).getElement().getClass());
     }
 
-    private AbstractRepository<Tree> createTreeRepository() {
-        return new AbstractRepository<Tree>() {
+    private TreeRepository<Tree> createTreeRepository() {
+        return new AbstractTreeRepository<Tree>() {
             @Override
             protected Session getCurrentSession() {
                 return session;

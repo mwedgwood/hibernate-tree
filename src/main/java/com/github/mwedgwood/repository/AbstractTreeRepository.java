@@ -5,7 +5,6 @@ import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 
-import javax.persistence.DiscriminatorValue;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -47,19 +46,6 @@ public abstract class AbstractTreeRepository<T extends Tree> extends AbstractRep
         parent.removeChildTree(entity);
         getCurrentSession().delete(entity);
         update(parent);
-    }
-
-
-    T findEntireTree() {
-        Integer rootId = (Integer) getCurrentSession().getNamedQuery("findRootNode").setCacheable(true)
-                .setParameter("aClass", getPersistentClass().getAnnotation(DiscriminatorValue.class).value())
-                .uniqueResult();
-
-        getCurrentSession().getNamedQuery("findAllNodesWithTheirChildren").setCacheable(true)
-                .setParameter("aClass", getPersistentClass().getAnnotation(DiscriminatorValue.class).value())
-                .list();
-
-        return (T) getCurrentSession().load(getPersistentClass(), rootId);
     }
 
     T initializeToDepth(int depth, T tree) {
