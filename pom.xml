@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.compiler.version>1.7</java.compiler.version>
-        <hibernate_version>4.2.6.Final</hibernate_version>
+        <hibernate_version>4.3.4.Final</hibernate_version>
         <jackson.version>2.3.0-rc1</jackson.version>
     </properties>
 
