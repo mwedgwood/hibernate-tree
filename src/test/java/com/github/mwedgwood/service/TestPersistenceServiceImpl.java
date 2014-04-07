@@ -2,11 +2,11 @@ package com.github.mwedgwood.service;
 
 import com.github.mwedgwood.model.tree.Tree;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 import org.reflections.Reflections;
 
 import javax.persistence.Entity;
@@ -46,7 +46,10 @@ public class TestPersistenceServiceImpl implements PersistenceService {
         configuration.setProperty(FORMAT_SQL, Boolean.TRUE.toString());
         addAnnotatedClasses(configuration);
 
-        ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
+        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                .applySettings(configuration.getProperties())
+                .build();
+
         _sessionFactory = configuration.buildSessionFactory(serviceRegistry);
     }
 
