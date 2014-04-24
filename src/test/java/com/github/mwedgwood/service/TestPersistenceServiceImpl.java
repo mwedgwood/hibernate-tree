@@ -15,7 +15,7 @@ import static org.hibernate.cfg.AvailableSettings.*;
 
 public class TestPersistenceServiceImpl implements PersistenceService {
 
-    private SessionFactory _sessionFactory;
+    private SessionFactory sessionFactory;
 
     private TestPersistenceServiceImpl() {
         initialize();
@@ -31,7 +31,7 @@ public class TestPersistenceServiceImpl implements PersistenceService {
 
     @Override
     public SessionFactory getSessionFactory() {
-        return _sessionFactory;
+        return sessionFactory;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TestPersistenceServiceImpl implements PersistenceService {
                 .applySettings(configuration.getProperties())
                 .build();
 
-        _sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
     }
 
     @Override
