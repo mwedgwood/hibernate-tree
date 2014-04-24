@@ -1,7 +1,6 @@
 package com.github.mwedgwood.service;
 
 import com.github.mwedgwood.model.SomeModel;
-import com.github.mwedgwood.model.tree.Tree;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
@@ -16,7 +15,7 @@ import static org.hibernate.cfg.AvailableSettings.*;
 
 public class TestPersistenceServiceImpl implements PersistenceService {
 
-    private SessionFactory _sessionFactory;
+    private SessionFactory sessionFactory;
 
     private TestPersistenceServiceImpl() {
         initialize();
@@ -32,7 +31,7 @@ public class TestPersistenceServiceImpl implements PersistenceService {
 
     @Override
     public SessionFactory getSessionFactory() {
-        return _sessionFactory;
+        return sessionFactory;
     }
 
     @Override
@@ -48,7 +47,7 @@ public class TestPersistenceServiceImpl implements PersistenceService {
         addAnnotatedClasses(configuration);
 
         ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
-        _sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
     }
 
     @Override
