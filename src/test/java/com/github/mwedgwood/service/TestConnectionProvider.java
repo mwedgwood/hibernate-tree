@@ -1,7 +1,7 @@
 package com.github.mwedgwood.service;
 
 import org.h2.jdbcx.JdbcDataSource;
-import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
