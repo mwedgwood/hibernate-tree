@@ -72,7 +72,7 @@ public class ComplexTreeTest {
 
         List<Tree> children = root.getChildren();
         assertFalse(children.isEmpty());
-        assertEquals(1, children.size());
+        assertEquals(2, children.size());
         assertEquals(TreeElement.class, children.get(0).getElement().getClass());
     }
 
