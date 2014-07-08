@@ -1,9 +1,8 @@
 package com.github.mwedgwood.service;
 
-import com.github.mwedgwood.model.tree.ComplexTree;
-import com.github.mwedgwood.model.tree.ComplexTreeElement;
-import com.github.mwedgwood.model.tree.Tree;
+import com.github.mwedgwood.model.tree.*;
 import com.github.mwedgwood.repository.AbstractTreeRepository;
+import com.github.mwedgwood.repository.NodeTreeRepository;
 import com.github.mwedgwood.repository.TreeRepository;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
@@ -120,6 +119,31 @@ public class TreeServiceBenchmark {
         start = System.currentTimeMillis();
         treeForDepth.prettyPrint();
         System.out.println("Time to recurse tree: " + (System.currentTimeMillis() - start) + " ms");
+
+    }
+
+    @Test
+    public void testGetNodeTreeByGroupId() throws Exception {
+        int maxDepth = 5;
+        Node rootNode = NodeTreeTest.makeNodes(maxDepth, 4, true, session);
+
+        NodeTreeRepository repository = new NodeTreeRepository(session);
+
+        long start = System.currentTimeMillis();
+        NodeTree treeForDepth = repository.findByGroupId(rootNode.getGroupId());
+        System.out.println("Time to find tree: " + (System.currentTimeMillis() - start) + " ms");
+
+        start = System.currentTimeMillis();
+        repository.findByGroupId(rootNode.getGroupId());
+        System.out.println("Time to find tree CACHED: " + (System.currentTimeMillis() - start) + " ms");
+
+        start = System.currentTimeMillis();
+        repository.findByGroupId(rootNode.getGroupId());
+        System.out.println("Time to find tree CACHED TWO: " + (System.currentTimeMillis() - start) + " ms");
+
+        start = System.currentTimeMillis();
+        treeForDepth.prettyPrint();
+        System.out.println("Time to recurse tree: " + (System.currentTimeMillis() - start) + " ms with " + treeForDepth.toList().size() + " nodes");
 
     }
 
