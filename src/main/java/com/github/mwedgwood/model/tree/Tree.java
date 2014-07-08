@@ -169,4 +169,17 @@ public abstract class Tree<T extends TreeElement> {
         this.parent = newParent;
         newParent.children.add(this);
     }
+
+    public List<Tree<T>> toList() {
+        return toList(this, new ArrayList<Tree<T>>());
+    }
+
+    List<Tree<T>> toList(Tree<T> tree, List<Tree<T>> allNodes) {
+        allNodes.add(tree);
+        for (Tree<T> child : tree.<T>getChildren()) {
+            toList(child, allNodes);
+        }
+        return allNodes;
+    }
+
 }

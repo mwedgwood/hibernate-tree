@@ -2,6 +2,7 @@ package com.github.mwedgwood.service;
 
 import com.github.mwedgwood.model.tree.*;
 import com.github.mwedgwood.repository.AbstractTreeRepository;
+import com.github.mwedgwood.repository.NodeRepository;
 import com.github.mwedgwood.repository.NodeTreeRepository;
 import com.github.mwedgwood.repository.TreeRepository;
 import org.hibernate.FlushMode;
@@ -11,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Random;
 
 public class TreeServiceBenchmark {
@@ -86,7 +88,7 @@ public class TreeServiceBenchmark {
 
     @Test
     public void testGetComplexTreeByRootId() throws Exception {
-        int maxDepth = 5;
+        int maxDepth = 8;
 
         ComplexTree tree = makeComplexTree(maxDepth, 4);
         session.save(tree);
@@ -118,18 +120,27 @@ public class TreeServiceBenchmark {
 
         start = System.currentTimeMillis();
         treeForDepth.prettyPrint();
-        System.out.println("Time to recurse tree: " + (System.currentTimeMillis() - start) + " ms");
+        System.out.println("Time to recurse tree: " + (System.currentTimeMillis() - start) + " ms with " + treeForDepth.toList().size() + " nodes");
 
     }
 
     @Test
     public void testGetNodeTreeByGroupId() throws Exception {
-        int maxDepth = 5;
+        int maxDepth = 8;
         Node rootNode = NodeTreeTest.makeNodes(maxDepth, 4, true, session);
 
         NodeTreeRepository repository = new NodeTreeRepository(session);
+        NodeRepository nodeRepository = new NodeRepository(session);
 
         long start = System.currentTimeMillis();
+        List<Node> nodes = nodeRepository.findByGroupId(rootNode.getGroupId());
+        System.out.println("Time to find " + nodes.size() + " nodes: " + (System.currentTimeMillis() - start) + " ms");
+
+        start = System.currentTimeMillis();
+        NodeTree.fromList(nodes);
+        System.out.println("Time to build tree: " + (System.currentTimeMillis() - start) + " ms");
+
+        start = System.currentTimeMillis();
         NodeTree treeForDepth = repository.findByGroupId(rootNode.getGroupId());
         System.out.println("Time to find tree: " + (System.currentTimeMillis() - start) + " ms");
 
