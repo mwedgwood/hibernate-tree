@@ -50,7 +50,7 @@ public abstract class AbstractTreeRepository<T extends Tree> extends AbstractRep
     }
 
 
-    T findEntireTree() {
+    public T findEntireTree() {
         Integer rootId = (Integer) getCurrentSession().getNamedQuery("findRootNode").setCacheable(true)
                 .setParameter("aClass", getPersistentClass().getAnnotation(DiscriminatorValue.class).value())
                 .uniqueResult();

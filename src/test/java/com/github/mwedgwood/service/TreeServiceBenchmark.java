@@ -50,8 +50,45 @@ public class TreeServiceBenchmark {
     }
 
     @Test
+    public void testGetEntireTree() throws Exception {
+        int maxDepth = 8;
+
+        ComplexTree tree = makeComplexTree(maxDepth, 4);
+        session.save(tree);
+        session.flush();
+
+        AbstractTreeRepository<ComplexTree> repository = new AbstractTreeRepository<ComplexTree>() {
+            @Override
+            protected Session getCurrentSession() {
+                return session;
+            }
+
+            @Override
+            protected Class<ComplexTree> getPersistentClass() {
+                return ComplexTree.class;
+            }
+        };
+
+        long start = System.currentTimeMillis();
+        ComplexTree treeForDepth = repository.findEntireTree();
+        System.out.println("Time to find tree: " + (System.currentTimeMillis() - start) + " ms");
+
+        start = System.currentTimeMillis();
+        repository.findEntireTree();
+        System.out.println("Time to find tree CACHED: " + (System.currentTimeMillis() - start) + " ms");
+
+        start = System.currentTimeMillis();
+        repository.findEntireTree();
+        System.out.println("Time to find tree CACHED TWO: " + (System.currentTimeMillis() - start) + " ms");
+
+        start = System.currentTimeMillis();
+        treeForDepth.prettyPrint();
+        System.out.println("Time to recurse tree: " + (System.currentTimeMillis() - start) + " ms");
+    }
+
+    @Test
     public void testGetComplexTreeForDepth() throws Exception {
-        int maxDepth = 5;
+        int maxDepth = 8;
 
         ComplexTree tree = makeComplexTree(maxDepth, 4);
         session.save(tree);
