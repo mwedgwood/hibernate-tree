@@ -24,18 +24,34 @@ public class NodeTreeRepository implements Repository {
         return Node.class;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public NodeTree findById(Integer id) {
-        return null;
-    }
-
-    public NodeTree findByGroupId(Integer groupId) {
-        return NodeTree.fromList(nodeRepository.findByGroupId(groupId));
+        List<Node> nodes = session.createSQLQuery(
+                "WITH RECURSIVE children(id, description, name, group_id, parent_id, children_order, depth) AS (\n" +
+                        "    SELECT t.id, t.description, t.name, t.group_id, t.parent_id, t.children_order, 0\n" +
+                        "    FROM node t\n" +
+                        "    WHERE t.id = :id\n" +
+                        "  UNION ALL\n" +
+                        "    SELECT a.id, a.description, a.name, a.group_id, a.parent_id, a.children_order, depth+1\n" +
+                        "    FROM node a\n" +
+                        "    JOIN children b ON (a.parent_id = b.id)\n" +
+                        ")\n" +
+                        " \n" +
+                        "SELECT t.id, t.name, t.description, t.parent_id, t.group_id, t.children_order\n" +
+                        "FROM children t\n" +
+                        "ORDER BY COALESCE(t.parent_id, t.id), t.depth, t.children_order;"
+        ).addEntity(Node.class).setInteger("id", id).list();
+        return NodeTree.fromList(nodes);
     }
 
     @Override
     public RepositoryResult findAll() {
         return null;
+    }
+
+    public NodeTree findByGroupId(Integer groupId) {
+        return NodeTree.fromList(nodeRepository.findByGroupId(groupId));
     }
 
     @Override

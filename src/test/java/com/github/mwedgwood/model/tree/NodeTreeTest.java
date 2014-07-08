@@ -41,47 +41,41 @@ public class NodeTreeTest {
 
     @Test
     public void testFindById() throws Exception {
-        Node root = buildSmallTree();
+        Node root = makeNodes(5, 4, true, session);
+        NodeTree tree = new NodeTreeRepository(session).findById(root.getId());
+        assertNotNull(tree);
+        assertFalse(tree.getChildren().isEmpty());
+        assertEquals(4, tree.getChildren().size());
+    }
 
+    @Test
+    public void testFindByGroupId() throws Exception {
+        Node root = makeNodes(5, 4, true, session);
         NodeTree tree = new NodeTreeRepository(session).findByGroupId(root.getGroupId());
         assertNotNull(tree);
         assertFalse(tree.getChildren().isEmpty());
-        assertEquals(2, tree.getChildren().size());
+        assertEquals(4, tree.getChildren().size());
         System.out.println(tree.prettyPrint());
     }
 
-    private Node buildSmallTree() {
+    public static Node makeNodes(int maxDepth, int maxWidth, boolean save, Session session) {
         Node root = new Node("root", null);
         root.setGroupId(0);
-        session.save(root);
-
-        Node child1 = new Node("1", null);
-        child1.setParentId(root.getId());
-        child1.setOrder(0);
-        child1.setGroupId(root.getGroupId());
-        session.save(child1);
-
-        Node child11 = new Node("1.1", null);
-        child11.setParentId(child1.getId());
-        child11.setOrder(0);
-        child11.setGroupId(root.getGroupId());
-        session.save(child11);
-
-        Node child2 = new Node("2", null);
-        child2.setParentId(root.getId());
-        child2.setOrder(1);
-        child2.setGroupId(root.getGroupId());
-        session.save(child2);
-
-        Node child21 = new Node("2.1", null);
-        child21.setParentId(child2.getId());
-        child21.setOrder(0);
-        child21.setGroupId(root.getGroupId());
-        session.save(child21);
-
-        session.flush();
-        assertNotNull(root.getId());
+        if (save) session.save(root);
+        makeNodes(maxDepth, maxWidth, root.getId(), 1, save, session);
+        if (save) session.flush();
         return root;
+    }
+
+    private static void makeNodes(int maxDepth, int maxWidth, int parentId, int parentDepth, boolean save, Session session) {
+        for (int i = 0; i < maxWidth && parentDepth <= maxDepth; i++) {
+            Node child = new Node(parentDepth + "." + (i + 1), null);
+            child.setGroupId(0);
+            child.setOrder(i);
+            child.setParentId(parentId);
+            if (save) session.save(child);
+            makeNodes(maxDepth, maxWidth, child.getId(), parentDepth + 1, save, session);
+        }
     }
 
 }
