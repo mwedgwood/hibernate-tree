@@ -13,7 +13,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class ComplexTreeTest {
 
@@ -74,6 +75,7 @@ public class ComplexTreeTest {
         assertFalse(children.isEmpty());
         assertEquals(2, children.size());
         assertEquals(TreeElement.class, children.get(0).getElement().getClass());
+        assertEquals(ComplexTreeElement.class, children.get(1).getElement().getClass());
     }
 
     private TreeRepository<Tree> createTreeRepository() {

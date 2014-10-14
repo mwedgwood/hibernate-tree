@@ -101,6 +101,7 @@
                     <target>${java.compiler.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+                <version>3.1</version>
             </plugin>
         </plugins>
     </build>
