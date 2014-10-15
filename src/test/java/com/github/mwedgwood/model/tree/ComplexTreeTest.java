@@ -45,8 +45,8 @@ public class ComplexTreeTest {
 
     @Test
     public void testSave() throws Exception {
-        Tree root = Tree.createRoot(new ComplexTreeElement("root", null), Tree.class);
-        root.addChildTree(new ComplexTreeElement("first child", "first child"));
+        Tree root = Tree.createRoot(new ComplexTreeNode("root"), Tree.class);
+        root.addChildTree(new ComplexTreeNode("first child"));
         session.save(root);
 
         session.flush();
@@ -58,9 +58,9 @@ public class ComplexTreeTest {
 
     @Test
     public void testListWithMixedType() throws Exception {
-        Tree complexTree = Tree.createRoot(new ComplexTreeElement("complex tree root", null), Tree.class);
-        complexTree.addChildTree(new TreeElement("first child base element", "base tree element"));
-        complexTree.addChildTree(new ComplexTreeElement("first Child complex element", "complex tree element"));
+        Tree complexTree = Tree.createRoot(new ComplexTreeNode("complex tree root"), Tree.class);
+        complexTree.addChildTree(new SimpleTreeNode("first child base element"));
+        complexTree.addChildTree(new ComplexTreeNode("first Child complex element"));
 
         session.save(complexTree);
         session.flush();
@@ -69,13 +69,13 @@ public class ComplexTreeTest {
 
         session.flush();
 
-        assertEquals(ComplexTreeElement.class, root.getElement().getClass());
+        assertEquals(ComplexTreeNode.class, root.getElement().getClass());
 
         List<Tree> children = root.getChildren();
         assertFalse(children.isEmpty());
         assertEquals(2, children.size());
-        assertEquals(TreeElement.class, children.get(0).getElement().getClass());
-        assertEquals(ComplexTreeElement.class, children.get(1).getElement().getClass());
+        assertEquals(SimpleTreeNode.class, children.get(0).getElement().getClass());
+        assertEquals(ComplexTreeNode.class, children.get(1).getElement().getClass());
     }
 
     private TreeRepository<Tree> createTreeRepository() {

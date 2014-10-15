@@ -19,7 +19,7 @@ public class TreeTest {
 
     @Test
     public void testGetPath() {
-        TestTree root = Tree.createRoot(new TreeElement("root", null), TestTree.class);
+        TestTree root = Tree.createRoot(new SimpleTreeNode("root"), TestTree.class);
         TestTree child1 = root.addChild("child1");
         TestTree child12 = child1.addChild("child1.1");
 
@@ -30,7 +30,7 @@ public class TreeTest {
 
     @Test
     public void testCalculateDepth() throws Exception {
-        TestTree root = Tree.createRoot(new TreeElement("root", null), TestTree.class);
+        TestTree root = Tree.createRoot(new SimpleTreeNode("root"), TestTree.class);
         TestTree child1 = root.addChild("child1");
         TestTree child12 = child1.addChild("child1.1");
 
@@ -49,7 +49,7 @@ public class TreeTest {
 
 
     private Tree createStubTestTree() {
-        TestTree root = Tree.createRoot(new TreeElement("root", null), TestTree.class);
+        TestTree root = Tree.createRoot(new SimpleTreeNode("root"), TestTree.class);
         root.addChild("child1").addChild("child1.1");
         root.addChild("child2").addChild("child2.1");
         return root;
@@ -61,7 +61,7 @@ public class TreeTest {
         }
 
         private TestTree addChild(String name) {
-            return addChildTree(new TreeElement(name, null));
+            return addChildTree(new SimpleTreeNode(name));
         }
     }
 

@@ -1,6 +1,7 @@
 package com.github.mwedgwood.repository;
 
 import com.github.mwedgwood.model.tree.Tree;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
@@ -15,6 +16,16 @@ public abstract class AbstractTreeRepository<T extends Tree> extends AbstractRep
         T treeById = super.findById(id);
 
         return initializeToDepth(depth, treeById);
+    }
+
+    @Override
+    public Tree findEntireTree(Integer rootId) {
+        List<Tree> results = createCriteria()
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                .setFetchMode("children", FetchMode.JOIN)
+                .list();
+
+        return results.isEmpty() ? null : (Tree) getCurrentSession().load(getPersistentClass(), rootId);
     }
 
     @Override

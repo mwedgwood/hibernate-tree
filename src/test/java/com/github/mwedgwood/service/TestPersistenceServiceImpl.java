@@ -6,6 +6,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.H2Dialect;
+import org.hibernate.loader.BatchFetchStyle;
 import org.hibernate.service.ServiceRegistry;
 import org.reflections.Reflections;
 
@@ -40,8 +41,10 @@ public class TestPersistenceServiceImpl implements PersistenceService {
         configuration.setProperty(Environment.CONNECTION_PROVIDER, TestConnectionProvider.class.getName());
         configuration.setProperty(DIALECT, H2Dialect.class.getName());
         configuration.setProperty(HBM2DDL_AUTO, "create-drop");
-        configuration.setProperty(USE_SECOND_LEVEL_CACHE, Boolean.FALSE.toString());
-        configuration.setProperty(USE_QUERY_CACHE, Boolean.FALSE.toString());
+        configuration.setProperty(BATCH_FETCH_STYLE, BatchFetchStyle.DYNAMIC.toString());
+        configuration.setProperty(CACHE_REGION_FACTORY, TestRegionFactory.class.getName());
+        configuration.setProperty(USE_SECOND_LEVEL_CACHE, Boolean.TRUE.toString());
+        configuration.setProperty(USE_QUERY_CACHE, Boolean.TRUE.toString());
         configuration.setProperty(SHOW_SQL, Boolean.TRUE.toString());
         configuration.setProperty(FORMAT_SQL, Boolean.TRUE.toString());
         addAnnotatedClasses(configuration);

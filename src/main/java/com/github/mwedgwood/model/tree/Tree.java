@@ -3,10 +3,13 @@ package com.github.mwedgwood.model.tree;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.*;
 
 
@@ -14,10 +17,12 @@ import java.util.*;
 @Table(name = "tree")
 @DynamicUpdate
 @DynamicInsert
+@BatchSize(size = 100)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "tree-cache")
 public class Tree {
 
     private Integer id;
-    private TreeElement element;
+    private TreeNode element;
     private Tree parent;
     private List<Tree> children = new LinkedList<>();
 
@@ -25,7 +30,7 @@ public class Tree {
     Tree() {
     }
 
-    public static <R extends Tree, S extends TreeElement> R createRoot(S treeElement, Class<R> type) {
+    public static <R extends Tree, S extends TreeNode> R createRoot(S treeElement, Class<R> type) {
         R root;
         try {
             root = type.newInstance();
@@ -48,11 +53,11 @@ public class Tree {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "element_id")
-    public TreeElement getElement() {
+    public TreeNode getElement() {
         return element;
     }
 
-    void setElement(TreeElement element) {
+    void setElement(TreeNode element) {
         this.element = element;
     }
 
@@ -68,6 +73,8 @@ public class Tree {
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @OrderColumn(name = "children_order")
+    @BatchSize(size = 100)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "tree-cache")
     public List<Tree> getChildren() {
         return children;
     }
@@ -81,7 +88,7 @@ public class Tree {
         return childTree.setParent(this);
     }
 
-    public <R extends Tree> R addChildTree(TreeElement treeElement) {
+    public <R extends Tree> R addChildTree(TreeNode treeNode) {
         R newChild;
         try {
             //noinspection unchecked
@@ -89,7 +96,7 @@ public class Tree {
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        newChild.setElement(treeElement);
+        newChild.setElement(treeNode);
 
         this.addChildTree(newChild);
         return newChild;
@@ -102,7 +109,7 @@ public class Tree {
 
     @Transient
     public String getPath() {
-        List<TreeElement> parts = new ArrayList<>(Arrays.asList(this.getElement()));
+        List<TreeNode> parts = new ArrayList<>(Arrays.asList(this.getElement()));
         for (Tree root = this.getParent(); root != null; root = root.getParent()) {
             parts.add(root.getElement());
         }
@@ -159,5 +166,17 @@ public class Tree {
         this.parent.children.remove(this);
         this.parent = newParent;
         newParent.children.add(this);
+    }
+
+    public List<Tree> toList() {
+        return toList(this, new ArrayList<Tree>());
+    }
+
+    List<Tree> toList(Tree tree, List<Tree> allNodes) {
+        allNodes.add(tree);
+        for (Tree child : tree.getChildren()) {
+            toList(child, allNodes);
+        }
+        return allNodes;
     }
 }
